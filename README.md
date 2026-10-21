@@ -4,6 +4,19 @@ TeamForge is a complete, secure, responsive university collaboration platform th
 
 ---
 
+## Foundations of Artificial Intelligence (FOAI) — Project Deliverables
+
+This repository contains the complete set of required deliverables for the **FOAI** project submission:
+
+| Deliverable | File / Path | Description |
+|---|---|---|
+| **AI Paper** | [`AI Paper.docx`](file:///AI%20Paper.docx) & [`AI Paper.pdf`](file:///AI%20Paper.pdf) | IEEE/ACM conference format research paper: *"Intelligent Student Team Formation Using Constraint Satisfaction and Heuristic Local Search"* |
+| **AI PPT** | [`AI PPT.pptx`](file:///AI%20PPT.pptx) | Complete 19-slide presentation slide deck for review and viva defense (16:9 widescreen) |
+| **AI Report** | [`AI Report.pdf`](file:///AI%20Report.pdf) | Formal academic project report covering problem formulation, CSP mathematical model, architecture, and empirical evaluation |
+| **Code** | [`code/`](file:///code/) | Complete runnable full-stack source code (Pure HTML5/CSS3/Vanilla JS frontend, PHP 8.2 backend, Classical AI CSP engine, MySQL 3NF database) |
+
+---
+
 ## 1. Technology Stack & Decoupled Architecture
 
 - **Frontend**: Pure **HTML5**, **CSS3**, and **JavaScript (ES6+)**:
@@ -52,9 +65,9 @@ All demo accounts use password: **`Password123!`**
 2. Start **Apache** and **MySQL** from the XAMPP Control Panel.
 
 ### Linking Project Directory to XAMPP
-The project resides in `c:\AI & Web project`. To serve it through Apache, a Windows Directory Junction is linked to `C:\xampp\htdocs\teamforge`:
+The application source code resides in `code/`. To serve it through Apache, create a Windows Directory Junction pointing `C:\xampp\htdocs\teamforge` to `code/`:
 ```cmd
-mklink /J "C:\xampp\htdocs\teamforge" "c:\AI & Web project"
+mklink /J "C:\xampp\htdocs\teamforge" "c:\AI & Web project\code"
 ```
 You can access TeamForge in your browser at:
 **`http://localhost/teamforge/`**
@@ -62,12 +75,13 @@ You can access TeamForge in your browser at:
 ### Database Setup
 The database setup script can be run automatically:
 ```powershell
-php "c:\AI & Web project\database\setup_db.php"
+php "c:\AI & Web project\code\database\setup_db.php"
 ```
 Or manually via **phpMyAdmin** (`http://localhost/phpmyadmin`):
 1. Create database: `teamforge_db` (Collation: `utf8mb4_unicode_ci`).
-2. Import `database/schema.sql`.
-3. Import `database/seed_data.sql`.
+2. Import `code/database/schema.sql`.
+3. Import `code/database/seed_data.sql`.
+
 
 ---
 
@@ -126,61 +140,70 @@ $$S(\text{Team}) = W_{\text{skill}} \cdot \text{SkillCov} + W_{\text{role}} \cdo
 ## 6. Directory Structure
 
 ```
-c:\AI & Web project/
-├── index.php                 # Modern Landing Page & Algorithm Showcase
-├── login.php                 # Secure Authentication with Quick Demo Autofill
-├── register.php              # Comprehensive Student Registration
-├── logout.php                # Session Invalidation
-├── dashboard.php             # Role-Aware Command Center
-├── profile.php               # Student Profile, Skills & Verified Projects
-├── notifications.php         # In-App Notification Center
-├── settings.php              # Password & Privacy Preferences
-├── 404.php                   # Error & Access Denied Page
-├── config/
-│   ├── constants.php         # Global constants, roles, and AI weights
-│   └── db.php                # PDO Singleton Database Connection
-├── includes/
-│   ├── auth.php              # Role-Based Access Control (RBAC) & Sessions
-│   ├── helpers.php           # Sanitization, CSRF, Flash alerts, Formatting
-│   ├── header.php            # HTML Header & CSS Links
-│   ├── navbar.php            # Top Navigation Bar with Unread Counter
-│   ├── sidebar.php           # Categorized Navigation Sidebar
-│   └── footer.php            # Footer & JavaScript Scripts
-├── assets/
-│   ├── css/main.css          # Design System (Navy, Violet accents, White cards)
-│   └── js/main.js            # CSRF fetch helper, Mobile sidebar, Toasts
-├── database/
-│   ├── schema.sql            # Normalized MySQL Schema (19 tables)
-│   ├── seed_data.sql         # Realistic University Demo Dataset
-│   └── setup_db.php          # 1-Click Database Setup & Seeder Script
-├── students/
-│   └── index.php             # Student Directory & Manual Team Builder Tray
-├── events/
-│   ├── index.php             # College Events & Hackathons Directory
-│   ├── view.php              # Event Details, Participant Roster & Enrollment
-│   └── create.php            # Faculty Event Publisher
-├── teams/
-│   ├── create.php            # Create Team with Code Generation
-│   ├── my_teams.php          # My Teams Hub & Join by Code
-│   ├── view.php              # Team Management Dashboard & Leadership Transfer
-│   ├── send_invite.php       # Transactional Invitation Sender
-│   ├── respond_invite.php    # Transactional Accept/Reject Invitation Handler
-│   └── smart_replace.php     # Surgical Skill Replacement Engine
-├── ai/
-│   ├── TeamForgeCspEngine.php # Core Classical AI Engine (CSP, MRV, Hill Climbing)
-│   ├── generator.php         # AI Team Generator Interface & Proposals
-│   ├── optimization_lab.php  # Visual Academic Execution Trace Lab
-│   └── simulator.php         # What-If Hypothetical Scenario Simulator
-├── tasks/
-│   └── index.php             # Kanban Task Board & AI Task Allocation
-├── chat/
-│   ├── index.php             # Real-Time Team Group Chat Interface
-│   ├── relay.php             # Ephemeral Zero-Storage PHP Relay
-│   └── server.js             # Optional Node.js WebSocket Relay Server
-├── sessions/
-│   ├── index.php             # Scheduled Timed Sessions Management
-│   └── room.php              # Live Timed Session Room with Attendance
-└── admin/
-    ├── index.php             # Faculty & Admin Center (Verifications & Events)
-    └── audit_logs.php        # Immutable System Security Audit Logs
+FOAI/
+├── AI Paper.docx                 # Complete IEEE/ACM Research Paper (Word format)
+├── AI Paper.pdf                  # Complete IEEE/ACM Research Paper (PDF format)
+├── AI PPT.pptx                   # Formal Viva/Review Slide Deck (19 Widescreen Slides)
+├── AI Report.pdf                 # Comprehensive University Project Report (PDF format)
+├── README.md                     # Project Documentation & Architecture Guide
+├── .gitignore                    # Git Ignore Configuration
+└── code/                         # Complete Full-Stack Application Source Code
+    ├── index.php                 # Modern Landing Page & Algorithm Showcase
+    ├── login.php                 # Secure Authentication with Quick Demo Autofill
+    ├── register.php              # Comprehensive Student Registration
+    ├── logout.php                # Session Invalidation
+    ├── dashboard.php             # Role-Aware Command Center
+    ├── profile.php               # Student Profile, Skills & Verified Projects
+    ├── notifications.php         # In-App Notification Center
+    ├── settings.php              # Password & Privacy Preferences
+    ├── 404.php                   # Error & Access Denied Page
+    ├── config/
+    │   ├── constants.php         # Global constants, roles, and AI weights
+    │   └── db.php                # PDO Singleton Database Connection
+    ├── includes/
+    │   ├── auth.php              # Role-Based Access Control (RBAC) & Sessions
+    │   ├── helpers.php           # Sanitization, CSRF, Flash alerts, Formatting
+    │   ├── header.php            # HTML Header & CSS Links
+    │   ├── navbar.php            # Top Navigation Bar with Unread Counter
+    │   ├── sidebar.php           # Categorized Navigation Sidebar
+    │   └── footer.php            # Footer & JavaScript Scripts
+    ├── assets/
+    │   ├── css/main.css          # Design System (Navy, Violet accents, White cards)
+    │   ├── js/main.js            # CSRF fetch helper, Mobile sidebar, Toasts
+    │   └── report_assets/        # Empirical evaluation charts & figures
+    ├── database/
+    │   ├── schema.sql            # Normalized MySQL Schema (19 tables)
+    │   ├── seed_data.sql         # Realistic University Demo Dataset
+    │   └── setup_db.php          # 1-Click Database Setup & Seeder Script
+    ├── students/
+    │   └── index.php             # Student Directory & Manual Team Builder Tray
+    ├── events/
+    │   ├── index.php             # College Events & Hackathons Directory
+    │   ├── view.php              # Event Details, Participant Roster & Enrollment
+    │   └── create.php            # Faculty Event Publisher
+    ├── teams/
+    │   ├── create.php            # Create Team with Code Generation
+    │   ├── my_teams.php          # My Teams Hub & Join by Code
+    │   ├── view.php              # Team Management Dashboard & Leadership Transfer
+    │   ├── send_invite.php       # Transactional Invitation Sender
+    │   ├── respond_invite.php    # Transactional Accept/Reject Invitation Handler
+    │   └── smart_replace.php     # Surgical Skill Replacement Engine
+    ├── ai/
+    │   ├── TeamForgeCspEngine.php # Core Classical AI Engine (CSP, MRV, Hill Climbing)
+    │   ├── generator.php         # AI Team Generator Interface & Proposals
+    │   ├── optimization_lab.php  # Visual Academic Execution Trace Lab
+    │   └── simulator.php         # What-If Hypothetical Scenario Simulator
+    ├── tasks/
+    │   └── index.php             # Kanban Task Board & AI Task Allocation
+    ├── chat/
+    │   ├── index.php             # Real-Time Team Group Chat Interface
+    │   ├── relay.php             # Ephemeral Zero-Storage PHP Relay
+    │   └── server.js             # Optional Node.js WebSocket Relay Server
+    ├── sessions/
+    │   ├── index.php             # Scheduled Timed Sessions Management
+    │   └── room.php              # Live Timed Session Room with Attendance
+    └── admin/
+        ├── index.php             # Faculty & Admin Center (Verifications & Events)
+        └── audit_logs.php        # Immutable System Security Audit Logs
 ```
+
