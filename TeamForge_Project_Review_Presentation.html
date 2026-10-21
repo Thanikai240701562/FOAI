@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeamForge — Project Review Presentation (Foundations of AI)</title>
+<style>
+  :root {
+    --bg-dark: #0f172a;
+    --navy-primary: #1e3a8a;
+    --indigo-accent: #4f46e5;
+    --emerald-green: #059669;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --card-bg: #ffffff;
+    --card-border: #e2e8f0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #0b0f19;
+    color: var(--text-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    user-select: none;
+  }
+
+  /* Presentation Controls Header */
+  .control-bar {
+    position: fixed;
+    top: 15px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: rgba(30, 41, 59, 0.85);
+    backdrop-filter: blur(8px);
+    padding: 8px 18px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .control-bar button {
+    background: #334155;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .control-bar button:hover { background: var(--indigo-accent); }
+  .control-bar .slide-indicator {
+    color: #cbd5e1;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 0 8px;
+  }
+
+  /* Slide Stage */
+  .slide-stage {
+    width: 100%;
+    max-width: 1100px;
+    aspect-ratio: 16 / 9;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    padding: 40px 55px 35px 55px;
+    display: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .slide.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.99); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* Slide Typography */
+  .slide-header {
+    border-bottom: 2.5px solid var(--indigo-accent);
+    padding-bottom: 10px;
+    margin-bottom: 22px;
+  }
+  .slide-tag {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--indigo-accent);
+    margin-bottom: 4px;
+  }
+  .slide-title {
+    font-family: Georgia, serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--navy-primary);
+  }
+
+  .slide-content {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+    overflow: hidden;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--card-border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  }
+  .card-title {
+    font-family: Georgia, serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--navy-primary);
+    margin-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 6px;
+  }
+  .card p, .card li {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+  }
+  .card ul { padding-left: 18px; }
+
+  /* Dark Theme Slide (Title & Thank You) */
+  .slide.hero-slide {
+    background: var(--bg-dark);
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 50px;
+  }
+  .hero-badge {
+    background: rgba(79, 70, 229, 0.25);
+    color: #818cf8;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+    display: inline-block;
+  }
+  .hero-title {
+    font-family: Georgia, serif;
+    font-size: 34px;
+    font-weight: bold;
+    color: #ffffff;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+  .hero-subtitle {
+    font-size: 20px;
+    color: #c7d2fe;
+    margin-bottom: 25px;
+  }
+  .hero-meta {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 25px;
+    width: 90%;
+    text-align: left;
+  }
+  .hero-meta div h4 {
+    font-size: 13px;
+    color: #818cf8;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .hero-meta div p {
+    font-size: 14px;
+    color: #e2e8f0;
+    line-height: 1.4;
+  }
+
+  /* Slide Footer */
+  .slide-footer {
+    position: absolute;
+    bottom: 12px;
+    left: 55px;
+    right: 55px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10.5px;
+    color: var(--text-muted);
+    border-top: 1px solid #f1f5f9;
+    padding-top: 6px;
+  }
+
+  /* Images in slides */
+  .slide-img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+
+  /* Tables in slides */
+  table.slide-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  table.slide-table th {
+    background: var(--navy-primary);
+    color: white;
+    padding: 8px 10px;
+    text-align: left;
+  }
+  table.slide-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  table.slide-table tr:nth-child(even) td { background: #f8fafc; }
+  .badge-highlight {
+    background: #e0e7ff;
+    color: #3730a3;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<div class="control-bar">
+  <button onclick="prevSlide()">&#9664; Previous</button>
+  <span class="slide-indicator" id="slideIndicator">Slide 1 / 19</span>
+  <button onclick="nextSlide()">Next &#9654;</button>
+  <button onclick="toggleFullScreen()">&#x26F6; Fullscreen</button>
+  <button onclick="window.print()">&#128424; Print Deck</button>
+</div>
+
+<div class="slide-stage" id="stage">
+
+  <!-- SLIDE 1: TITLE SLIDE -->
+  <div class="slide hero-slide active">
+    <div class="hero-badge">RAJALAKSHMI ENGINEERING COLLEGE (AUTONOMOUS) | DEPT OF CSE</div>
+    <div class="hero-badge" style="background: rgba(5,150,105,0.25); color: #34d399; margin-left: 8px;">FOUNDATIONS OF ARTIFICIAL INTELLIGENCE</div>
+    <h1 class="hero-title">TEAMFORGE: Intelligent Student Team Formation Platform</h1>
+    <h2 class="hero-subtitle">Using Constraint Satisfaction and Heuristic Local Search</h2>
+    
+    <div class="hero-meta">
+      <div>
+        <h4>Project Candidates</h4>
+        <p><strong>Tarun Antony M</strong> (2116240701556)<br>
+           <strong>Thanikaivel S</strong> (2116240701562)<br>
+           <span style="color: #94a3b8; font-size: 12px;">B.E. Computer Science and Engineering</span></p>
+      </div>
+      <div>
+        <h4>Project Supervisor</h4>
+        <p><strong>Mrs. B. Deepa, M.E., (Ph.D.)</strong><br>
+           Assistant Professor (Selection Grade), Dept. of CSE<br>
+           <span style="color: #94a3b8; font-size: 12px;">Rajalakshmi Engineering College, Chennai</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: MOTIVATION -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Project Context</div>
+      <div class="slide-title">1. Background & Motivation: Why TeamForge?</div>
+    </div>
+    <div class="slide-content">
+      <div class="card">
+        <div class="card-title">High-Stakes Events</div>
+        <ul>
+          <li><strong>Hackathons:</strong> SIH, collegiate hackathons require rapid cross-functional delivery within 24-36 hrs.</li>
+          <li><strong>Capstone Projects:</strong> Determines academic success and real-world portfolio quality.</li>
+          <li><strong>Skill Diversity:</strong> Requires frontend, backend, database, classical AI, and UI/UX designers working in unison.</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color: #fecaca; background: #fff5f5;">
+        <div class="card-title" style="color: #b91c1c;">Breakdown of Ad-Hoc Teams</div>
+        <ul>
+          <li><strong>Social Clique Bias:</strong> Friends assemble without evaluating skill balance or project needs.</li>
+          <li><strong>Severe Skill Deficits:</strong> Teams with 4 UI designers and zero database architects fail quickly.</li>
+          <li><strong>Schedule Conflicts:</strong> Misaligned commitments lead to inactive team members.</li>
+          <li><strong>Exclusion of Solitary Talent:</strong> Highly capable introverts or juniors are overlooked.</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color: #a7f3d0; background: #f0fdf4;">
+        <div class="card-title" style="color: #047857;">The Classical AI Solution</div>
+        <ul>
+          <li><strong>Rigorous CSP Model:</strong> Replaces guesswork with deterministic constraint satisfaction.</li>
+          <li><strong>Zero Black-Box APIs:</strong> 100% deterministic, explainable, and cost-free native implementation.</li>
+          <li><strong>Complete Workspace:</strong> Integrates Kanban board, standups, and zero-storage ephemeral chat.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 2 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: PROBLEM STATEMENT -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Problem Definition</div>
+      <div class="slide-title">2. Problem Statement & Combinatorial Complexity</div>
+    </div>
+    <div class="slide-content">
+      <div class="card">
+        <div class="card-title">The Core Problem</div>
+        <p>Given <strong>N</strong> registered student candidates possessing heterogeneous technical skill proficiencies, academic seniority levels, and availability commitments:</p>
+        <ul>
+          <li><strong>Objective:</strong> Construct an optimal partition into cohesive project teams of target size <strong>K</strong>.</li>
+          <li><strong>Hard Constraints:</strong> Exact team size limits, pairwise member uniqueness (AllDiff), and collegiate event registration.</li>
+          <li><strong>Multi-Objective Harmony:</strong> Maximize skill coverage, role specialization, senior-junior pairing, and sprint availability.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Combinatorial Explosion Challenge</div>
+        <p>The total possible team subsets across <em>N</em> candidates for size <em>K</em> follows:</p>
+        <div style="background: #f1f5f9; padding: 10px; border-radius: 6px; text-align: center; font-weight: bold; font-family: monospace; margin: 10px 0;">
+          C(N, K) = N! / [ K! &times; (N - K)! ]
+        </div>
+        <ul>
+          <li>For cohort <strong>N = 60, K = 4:</strong> <strong>487,635 subsets</strong> per team!</li>
+          <li>For cohort <strong>N = 60, K = 6:</strong> <strong>50,063,860 subsets!</strong></li>
+          <li><strong>NP-Hard Complexity:</strong> Exhaustive brute-force search crashes server response times.</li>
+          <li><strong>Resolution:</strong> Classical AI heuristics (MRV + Forward Checking + Hill Climbing) cut search tree to sub-millisecond execution.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 3 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: OBJECTIVES -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Project Objectives</div>
+      <div class="slide-title">3. Key Objectives & Engineering Deliverables</div>
+    </div>
+    <div class="slide-content" style="flex-direction: column; gap: 10px;">
+      <div class="card" style="padding: 10px 16px;">
+        <strong>1. Classical CSP Modeling:</strong> Formalize student team formation as a discrete Constraint Satisfaction Problem with explicit Variables, Domains, and Hard Constraints.
+      </div>
+      <div class="card" style="padding: 10px 16px;">
+        <strong>2. Intelligent Search Space Pruning:</strong> Implement recursive Backtracking Search augmented by Minimum Remaining Values (MRV) heuristic and Forward Checking (FC).
+      </div>
+      <div class="card" style="padding: 10px 16px;">
+        <strong>3. Heuristic Local Search:</strong> Develop a Hill Climbing procedure with 1-opt candidate swaps guided by a 5-factor multi-objective fitness function.
+      </div>
+      <div class="card" style="padding: 10px 16px;">
+        <strong>4. Multi-Proposal Generation:</strong> Automatically produce 3 distinct proposal archetypes (Balanced Alpha, Skill-Dense Beta, Agile Gamma) with explainable decision traces.
+      </div>
+      <div class="card" style="padding: 10px 16px;">
+        <strong>5. Full-Stack Web Architecture:</strong> Construct a high-throughput, decoupled platform (PHP 8.2 + MySQL 8.0) featuring Kanban boards, standups, and zero-storage ephemeral chat.
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 4 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: LITERATURE REVIEW -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">State of the Art</div>
+      <div class="slide-title">4. Literature Review & Research Gaps</div>
+    </div>
+    <div class="slide-content" style="flex-direction: column;">
+      <table class="slide-table">
+        <thead>
+          <tr>
+            <th>Platform / Approach</th>
+            <th>Matching Paradigm</th>
+            <th>Constraint Guarantees</th>
+            <th>AI Explainability</th>
+            <th>Chat Storage Privacy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Devpost / Hackathon Portals</strong></td>
+            <td>Manual bulletin board / Self-selection</td>
+            <td>None (Manual checking)</td>
+            <td>Zero AI</td>
+            <td>External Discord/Slack links</td>
+          </tr>
+          <tr>
+            <td><strong>Commercial HR AI Tools</strong></td>
+            <td>Opaque Deep Learning / Embeddings</td>
+            <td>Probabilistic / Weak</td>
+            <td>Black-box (Unexplainable)</td>
+            <td>Permanent Cloud Data Retention</td>
+          </tr>
+          <tr>
+            <td><strong>Academic Heuristic Scripts</strong></td>
+            <td>Stand-alone scripts (ILP / GA)</td>
+            <td>Strict (Mathematical rules)</td>
+            <td>High (Rule-based)</td>
+            <td>No integrated communication</td>
+          </tr>
+          <tr style="background: #eef2ff;">
+            <td><strong>TeamForge (Proposed)</strong></td>
+            <td><span class="badge-highlight">Hybrid CSP (MRV+FC) + Hill Climbing</span></td>
+            <td><strong>100% Deterministic & Hard</strong></td>
+            <td><strong>Full Step-by-Step Trace Log</strong></td>
+            <td><strong>Zero-Retention Ephemeral Buffer</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="card" style="margin-top: 15px; background: #f0fdf4; border-color: #bbf7d0;">
+        <strong style="color: #047857;">Research Gap Solved:</strong> Existing academic matchers operate offline via CSV files without real-time collaboration tools, while commercial tools compromise student data privacy. TeamForge unites classical AI rigor with a secure, production web environment.
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 5 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: ARCHITECTURE -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">System Design</div>
+      <div class="slide-title">5. Proposed System Architecture: Decoupled Multi-Tier</div>
+    </div>
+    <div class="slide-content">
+      <div style="flex: 1.4; display: flex; align-items: center; justify-content: center;">
+        <img src="assets/report_assets/fig_3_1_architecture.png" class="slide-img" alt="Architecture Diagram">
+      </div>
+      <div class="card" style="flex: 1;">
+        <div class="card-title">Three-Tier Architecture</div>
+        <ul>
+          <li><strong>Presentation Tier (Client):</strong> HTML5, Vanilla CSS3 tokens, Bootstrap 5.3, ES6+ JS. Interacts strictly via asynchronous JSON fetch calls.</li>
+          <li><strong>Application & AI Engine (Server):</strong> PHP 8.2+ RESTful routing, RBAC authorization, CSRF sanitizer, and deterministic CSP / Hill Climbing algorithms.</li>
+          <li><strong>Data & Storage Tier:</strong>
+            <ul>
+              <li><strong>Persistent:</strong> MySQL 8.0 3NF schema (users, skills, events, teams, tasks).</li>
+              <li><strong>Ephemeral:</strong> Rolling in-memory chat buffer with zero persistent storage.</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 6 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: CSP FORMULATION -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">AI Engine Specifications</div>
+      <div class="slide-title">6. Classical AI Formulation: The CSP Framework</div>
+    </div>
+    <div class="slide-content">
+      <div class="card">
+        <div class="card-title">Variables (X)</div>
+        <p>Unfilled functional team role slots:</p>
+        <p style="font-family: monospace; font-weight: bold; background: #f1f5f9; padding: 6px; border-radius: 4px;">X = { V_1, V_2, ..., V_k }</p>
+        <ul>
+          <li><em>V_1:</em> Team Leader / Architect</li>
+          <li><em>V_2:</em> Frontend / UI Engineer</li>
+          <li><em>V_3:</em> Backend / Database Specialist</li>
+          <li><em>V_4:</em> Classical AI & Algo Lead</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Domains (D)</div>
+        <p>Eligible student pools filtered dynamically per role:</p>
+        <p style="font-family: monospace; font-weight: bold; background: #f1f5f9; padding: 6px; border-radius: 4px;">D(V_i) &sube; { Candidate Students }</p>
+        <ul>
+          <li>Skills matching required technical tags.</li>
+          <li>Active registration in target hackathon.</li>
+          <li>Pinned members locked by leader.</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color: #fecaca;">
+        <div class="card-title" style="color: #b91c1c;">Hard Constraints (C)</div>
+        <ul>
+          <li><strong>Team Capacity:</strong> Exactly <em>k</em> assigned slots.</li>
+          <li><strong>Pairwise Uniqueness (AllDiff):</strong> &forall; <em>i &ne; j, V_i &ne; V_j</em> (no duplicate allocations).</li>
+          <li><strong>Event Enrollment:</strong> Must possess verified event registration record.</li>
+          <li><strong>Bandwidth Threshold:</strong> Active team commitments &lt; threshold.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 7 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: MRV & FORWARD CHECKING -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">AI Engine Specifications</div>
+      <div class="slide-title">7. Combinatorial Search Optimization: MRV & Forward Checking</div>
+    </div>
+    <div class="slide-content">
+      <div class="card">
+        <div class="card-title">Minimum Remaining Values (MRV) Heuristic</div>
+        <p><strong>"Fail-First Principle" in Action:</strong></p>
+        <ul>
+          <li>At each recursive step, evaluate remaining domain sizes across all unassigned role slots.</li>
+          <li>Select the variable <strong>V_chosen</strong> with smallest domain: <strong>min |D(V_i)|</strong>.</li>
+          <li><strong>Why It Matters:</strong> Highly specialized roles (e.g. classical algorithm specialist with only 2 candidates) are tackled first. If impossible, the search fails immediately without evaluating hundreds of frontend variations.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Forward Checking (FC) Constraint Propagation</div>
+        <p><strong>Look-Ahead Pruning:</strong></p>
+        <ul>
+          <li>When candidate <em>C</em> is tentatively assigned to <em>V_i</em>:</li>
+          <li>Immediately prune <em>C</em> from domains of all remaining unassigned roles:
+            <div style="font-family: monospace; background: #f1f5f9; padding: 6px; border-radius: 4px; margin: 6px 0;">D(V_j) &larr; D(V_j) \ { C } &forall; j &ne; i</div>
+          </li>
+          <li><strong>Domain Wipeout Detection:</strong> If any remaining role's domain size becomes 0 (|D(V_j)| = 0), forward checking triggers an <strong>IMMEDIATE backtrack</strong>.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 8 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: HILL CLIMBING -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Heuristic Search</div>
+      <div class="slide-title">8. Heuristic Local Search & Multi-Objective Optimization</div>
+    </div>
+    <div class="slide-content">
+      <div class="card">
+        <div class="card-title">Hill Climbing with 1-Opt Candidate Swaps</div>
+        <ul>
+          <li>CSP search provides a valid baseline; local search maximizes overall team harmony.</li>
+          <li><strong>1-Opt Neighborhood Exploration:</strong> Systematically evaluates swapping each unpinned team member with an available candidate in the pool.</li>
+          <li><strong>Strict Gradient Ascent:</strong> Retains neighbor swap only if fitness strictly increases: <em>S(A_neighbor) &gt; S(A_current) + &epsilon;</em>.</li>
+          <li><strong>Convergence:</strong> Terminates when no single swap yields a higher score (local optimum plateau).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Multi-Objective Fitness Function S(Team)</div>
+        <div style="font-family: monospace; font-size: 11px; background: #f1f5f9; padding: 8px; border-radius: 6px; margin-bottom: 8px;">
+          S = W_skill&middot;SkillCov + W_role&middot;RoleCov + W_exp&middot;ExpBal + W_avail&middot;AvailScore + W_int&middot;Interest
+        </div>
+        <ul>
+          <li><strong>W_skill (0.35):</strong> Coverage of mandatory project skills (1-5 proficiency scale).</li>
+          <li><strong>W_role (0.25):</strong> Full coverage across specified team roles.</li>
+          <li><strong>W_exp (0.15):</strong> Academic year diversity & past verified project count.</li>
+          <li><strong>W_avail (0.15):</strong> Declared weekly availability (Available=100%, Busy=50%).</li>
+          <li><strong>W_int (0.10):</strong> Hackathon domain interest alignment.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 9 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: MULTI-PROPOSAL GENERATION -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Algorithmic Outputs</div>
+      <div class="slide-title">9. Explainable Multi-Proposal Generation Strategy</div>
+    </div>
+    <div class="slide-content">
+      <div class="card" style="border-top: 4px solid var(--navy-primary);">
+        <div class="card-title">Proposal Alpha: Balanced Optimal</div>
+        <p><strong>Holistic Synergistic Squad</strong></p>
+        <p>Empirical Score: <span class="badge-highlight">94.2%</span></p>
+        <ul>
+          <li>CSP (MRV+FC) + Hill Climbing.</li>
+          <li>Equal balance across skills, roles, experience, and availability.</li>
+          <li>Best for semester capstones & multi-round hackathons.</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top: 4px solid #dc2626;">
+        <div class="card-title" style="color: #dc2626;">Proposal Beta: Skill-Dense Squad</div>
+        <p><strong>Technical Heavyweight Squad</strong></p>
+        <p>Empirical Score: <span class="badge-highlight">89.8%</span> (100% Skill)</p>
+        <ul>
+          <li>Heavily biases skill weight (W_skill = 0.55).</li>
+          <li>Selects top proficiency candidates across required technologies.</li>
+          <li>Ideal for hard algorithm, AI, and systems competitions.</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top: 4px solid var(--emerald-green);">
+        <div class="card-title" style="color: var(--emerald-green);">Proposal Gamma: Agile & High Bandwidth</div>
+        <p><strong>Sprint Execution Velocity Squad</strong></p>
+        <p>Empirical Score: <span class="badge-highlight">91.0%</span> (100% Avail)</p>
+        <ul>
+          <li>Biases member bandwidth (W_avail = 0.35).</li>
+          <li>Selects candidates with 100% open sprint capacity.</li>
+          <li>Ideal for fast 24-hr agile hackathons with zero bottlenecks.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 10 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: MODULES OVERVIEW -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">System Implementation</div>
+      <div class="slide-title">10. Functional System Modules Overview</div>
+    </div>
+    <div class="slide-content" style="flex-wrap: wrap; gap: 12px;">
+      <div class="card" style="flex: 1 1 45%; padding: 12px 16px;">
+        <strong>1. Student & Skill Profiling:</strong> 3NF relational schema storing verified academic data, 1-5 skill proficiency ratings, years of experience, and past verified capstone projects.
+      </div>
+      <div class="card" style="flex: 1 1 45%; padding: 12px 16px;">
+        <strong>2. Collegiate Event Manager:</strong> Faculty publishing of hackathons, symposiums, and project expos with timeline controls, min/max team bounds, and eligibility criteria.
+      </div>
+      <div class="card" style="flex: 1 1 45%; padding: 12px 16px;">
+        <strong>3 & 4. Classical AI Engine:</strong> Native PHP 8.2 implementation of CSP, MRV Heuristic, Forward Checking, Hill Climbing, and transparent decision trace audit logging.
+      </div>
+      <div class="card" style="flex: 1 1 45%; padding: 12px 16px;">
+        <strong>5. Project Kanban Board:</strong> Agile task management with drag-and-drop transitions (Not Started, In Progress, Completed), member assignments, category badges, and deadlines.
+      </div>
+      <div class="card" style="flex: 1 1 45%; padding: 12px 16px;">
+        <strong>6. Privacy Ephemeral Chat:</strong> Real-time rolling in-memory team chat with ZERO persistent database storage, ensuring strict student privacy and ephemeral communication.
+      </div>
+      <div class="card" style="flex: 1 1 45%; padding: 12px 16px;">
+        <strong>7. Session Scheduler & RBAC:</strong> Standup meetings with structured agendas and attendance logs, reinforced by enterprise Role-Based Access Control and CSRF validation.
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 11 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 12: EXPERIMENTAL SETUP -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Experimental Evaluation</div>
+      <div class="slide-title">11. Experimental Setup & Benchmarking Environment</div>
+    </div>
+    <div class="slide-content">
+      <div class="card" style="flex: 1.2;">
+        <div class="card-title">Testbed System Specifications</div>
+        <table class="slide-table">
+          <tr><th>Component</th><th>Technical Specification</th></tr>
+          <tr><td><strong>Operating System</strong></td><td>Microsoft Windows 11 Enterprise (64-bit)</td></tr>
+          <tr><td><strong>Web Server & Runtime</strong></td><td>Apache 2.4.58 / PHP 8.2.12 (OPcache Enabled)</td></tr>
+          <tr><td><strong>Database Management</strong></td><td>MySQL 8.0.35 / MariaDB (InnoDB, utf8mb4)</td></tr>
+          <tr><td><strong>Client-Side Stack</strong></td><td>HTML5, Vanilla CSS3 tokens, Bootstrap 5.3, ES6+ JS</td></tr>
+          <tr><td><strong>Processor & RAM</strong></td><td>Intel Core i7-12700H @ 2.30 GHz (14 Cores), 16GB DDR5</td></tr>
+          <tr><td><strong>Pre-Seeded Cohort</strong></td><td>60 Students, 15 Master Skills, 4 Active Hackathons</td></tr>
+        </table>
+      </div>
+      <div class="card" style="flex: 1;">
+        <div class="card-title">Key Performance Indicators</div>
+        <ul>
+          <li><strong>Search Space Pruning:</strong> Number of nodes explored in search tree before solution discovery.</li>
+          <li><strong>Execution Latency:</strong> Wall-clock runtime in milliseconds for generation.</li>
+          <li><strong>Convergence Speed:</strong> Number of 1-opt swap iterations needed for Hill Climbing plateau.</li>
+          <li><strong>Multi-Objective Score:</strong> Quality of resulting team across the 5 dimensions.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 12 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 13: RESULTS PRUNING -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Performance Evaluation</div>
+      <div class="slide-title">12. Results: Search Tree Pruning Efficiency</div>
+    </div>
+    <div class="slide-content">
+      <div style="flex: 1.3; display: flex; align-items: center; justify-content: center;">
+        <img src="assets/report_assets/fig_5_3_search_pruning.png" class="slide-img" alt="Search Pruning Chart">
+      </div>
+      <div class="card" style="flex: 1;">
+        <div class="card-title">Empirical Findings</div>
+        <ul>
+          <li><strong>Standard Backtracking:</strong> Explored <strong>11,800 nodes</strong> for team size K = 6 due to combinatorial thrashing.</li>
+          <li><strong>MRV + Forward Checking:</strong> Explored only <strong>75 nodes</strong> for the exact same problem instance!</li>
+          <li><span class="badge-highlight">98.4% Search Complexity Reduction</span></li>
+          <li><strong>Latency:</strong> Completed in <strong>&lt; 45 milliseconds</strong>, allowing instant real-time response on standard Apache/PHP hosting.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 13 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 14: RESULTS CONVERGENCE & RADAR -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Performance Evaluation</div>
+      <div class="slide-title">13. Results: Local Search Convergence & Proposal Trade-Offs</div>
+    </div>
+    <div class="slide-content" style="flex-direction: column;">
+      <div style="display: flex; gap: 15px; flex: 1;">
+        <div style="flex: 1; text-align: center;">
+          <img src="assets/report_assets/fig_5_1_hill_climbing_convergence.png" style="max-height: 200px; max-width: 100%; border-radius: 6px;" alt="Convergence">
+          <p style="font-size: 11px; font-weight: bold; margin-top: 4px;">Figure 5.1: Hill Climbing Convergence Curve</p>
+        </div>
+        <div style="flex: 1; text-align: center;">
+          <img src="assets/report_assets/fig_5_2_radar_proposals.png" style="max-height: 200px; max-width: 100%; border-radius: 6px;" alt="Radar">
+          <p style="font-size: 11px; font-weight: bold; margin-top: 4px;">Figure 5.2: Multi-Objective Radar Comparison</p>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 8px; padding: 10px 16px;">
+        <strong>Key Insights:</strong> Local search rapidly improves baseline team score from 68.4% to 90.2% in 5 iterations, plateauing at 95.5% by iteration 11. Proposal Alpha delivers the best multi-dimensional balance (94.2%).
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 14 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 15: SECURITY & PRIVACY -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Security & Compliance</div>
+      <div class="slide-title">14. Privacy-Preserving Architecture & Web Security</div>
+    </div>
+    <div class="slide-content">
+      <div class="card">
+        <div class="card-title">Zero-Retention Ephemeral Team Chat</div>
+        <ul>
+          <li><strong>Zero Persistent Database Storage:</strong> Unlike Discord or Slack, chat messages are deliberately NOT stored in MySQL tables.</li>
+          <li><strong>In-Memory Rolling Buffer:</strong> Kept in rolling server memory with automatic TTL expiration.</li>
+          <li><strong>Team-Bound Access Wall:</strong> Enforced by server-side verification: <code>isUserMemberOf($teamId, $userId)</code>. Non-members receive 403 Forbidden.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Defensive Engineering Hardening</div>
+        <ul>
+          <li><strong>100% Prepared SQL Statements:</strong> Emulated PDO prepares disabled; eliminates SQL injection risks.</li>
+          <li><strong>Anti-CSRF Tokens:</strong> Cryptographic token validation on state-changing endpoints.</li>
+          <li><strong>Session Regeneration:</strong> <code>session_regenerate_id(true)</code> on login prevents session fixation.</li>
+          <li><strong>Output Sanitization:</strong> Context-aware escaping via <code>htmlspecialchars()</code>.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 15 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 16: SYSTEM DEMONSTRATION -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">User Interface</div>
+      <div class="slide-title">15. Live Platform Demonstration Highlights</div>
+    </div>
+    <div class="slide-content" style="flex-wrap: wrap; gap: 12px;">
+      <div class="card" style="flex: 1 1 45%; padding: 12px 16px;">
+        <strong>Role-Aware Student Dashboard:</strong> Displays active team metrics, registered hackathon badges, skill tags, and quick-action modals.
+      </div>
+      <div class="card" style="flex: 1 1 45%; padding: 12px 16px;">
+        <strong>Student Directory & Instant Search:</strong> Search candidates by department, year, specific skill proficiency, and current availability status.
+      </div>
+      <div class="card" style="flex: 1 1 45%; padding: 12px 16px;">
+        <strong>Classical AI Generator Console:</strong> Interactive solver interface where leaders select required skills, tune objective weights, and inspect live trace logs.
+      </div>
+      <div class="card" style="flex: 1 1 45%; padding: 12px 16px;">
+        <strong>Project Kanban Task Board:</strong> Task creation, assignment, priority labeling, and drag-and-drop state transitions across Not Started, In Progress, and Completed.
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 16 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 17: CONCLUSION & FUTURE WORK -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Conclusion & Roadmap</div>
+      <div class="slide-title">16. Conclusion & Future Enhancements</div>
+    </div>
+    <div class="slide-content">
+      <div class="card">
+        <div class="card-title">Project Summary</div>
+        <ul>
+          <li><strong>Theoretical Success:</strong> Proven that collegiate team formation can be solved deterministically using classical AI (CSP + Heuristic Local Search) without opaque ML models.</li>
+          <li><strong>Efficiency:</strong> Achieved 98.4% node pruning and sub-45ms execution latency.</li>
+          <li><strong>Social Impact:</strong> Eliminates social clique bias and facilitates fair, balanced collaboration for collegiate students.</li>
+          <li><strong>Production-Ready:</strong> Integrated web application with Kanban boards, standup sessions, and ephemeral chat.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Future Enhancements</div>
+        <ul>
+          <li><strong>Simulated Annealing:</strong> Add cooling schedule to escape local optima in extremely sparse candidate pools.</li>
+          <li><strong>LMS Integration:</strong> Connect with institutional LMS (Canvas, Moodle, Blackboard) via LTI standards.</li>
+          <li><strong>Personality Synergy:</strong> Incorporate Belbin Team Role surveys for cognitive diversity modeling.</li>
+          <li><strong>WebRTC Media:</strong> Deploy ephemeral peer-to-peer audio/video standup meetings via WebSockets.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 17 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 18: REFERENCES -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Bibliography</div>
+      <div class="slide-title">17. Key Academic References</div>
+    </div>
+    <div class="slide-content" style="flex-direction: column; gap: 8px;">
+      <div class="card" style="padding: 10px 16px;">
+        <strong>[1] Russell, S. and Norvig, P. (2020)</strong> <em>Artificial Intelligence: A Modern Approach</em>, 4th Edition, Pearson Education, pp. 180-213.
+      </div>
+      <div class="card" style="padding: 10px 16px;">
+        <strong>[2] Dechter, R. (2003)</strong> <em>Constraint Processing</em>, Morgan Kaufmann Publishers, San Francisco, CA, pp. 73-124.
+      </div>
+      <div class="card" style="padding: 10px 16px;">
+        <strong>[3] Lappas, T., Liu, K. and Terzi, E. (2009)</strong> 'Finding a Team of Experts in Social Networks', <em>Proceedings of the 15th ACM SIGKDD</em>, pp. 467-476.
+      </div>
+      <div class="card" style="padding: 10px 16px;">
+        <strong>[4] Aarts, E. and Korst, J. (1989)</strong> <em>Simulated Annealing and Boltzmann Machines</em>, John Wiley & Sons, New York, pp. 45-88.
+      </div>
+      <div class="card" style="padding: 10px 16px;">
+        <strong>[5] Li, C. T., Shan, M. K. and Lin, S. D. (2015)</strong> 'On Team Formation with Skill Competence and Collaboration History in Social Networks', <em>IEEE TKDE</em>, Vol. 27, No. 8, pp. 2201-2213.
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rajalakshmi Engineering College | Dept. of CSE</span>
+      <span>Slide 18 of 19</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 19: THANK YOU & Q&A -->
+  <div class="slide hero-slide">
+    <h1 class="hero-title" style="font-size: 46px; margin-bottom: 8px;">THANK YOU</h1>
+    <h2 class="hero-subtitle" style="font-size: 24px; color: #818cf8; margin-bottom: 25px;">Questions & Project Defense Discussion</h2>
+
+    <div class="hero-meta" style="flex-direction: column; align-items: center; text-align: center; gap: 10px;">
+      <p style="font-size: 16px; color: #fff;"><strong>Team Members:</strong> Tarun Antony M (2116240701556) &bull; Thanikaivel S (2116240701562)</p>
+      <p style="font-size: 14px; color: #34d399;"><strong>Supervisor:</strong> Mrs. B. Deepa, Assistant Professor (SG), Dept. of CSE</p>
+      <p style="font-size: 13px; color: #94a3b8;">Rajalakshmi Engineering College (Autonomous), Thandalam, Chennai</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+  const indicator = document.getElementById('slideIndicator');
+
+  function showSlide(index) {
+    if (index < 0) index = 0;
+    if (index >= slides.length) index = slides.length - 1;
+    slides.forEach((s, idx) => {
+      s.classList.toggle('active', idx === index);
+    });
+    currentSlide = index;
+    indicator.textContent = `Slide ${currentSlide + 1} / ${slides.length}`;
+  }
+
+  function nextSlide() { showSlide(currentSlide + 1); }
+  function prevSlide() { showSlide(currentSlide - 1); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      prevSlide();
+    } else if (e.key === 'Home') {
+      showSlide(0);
+    } else if (e.key === 'End') {
+      showSlide(slides.length - 1);
+    }
+  });
+
+  function toggleFullScreen() {
+    const stage = document.getElementById('stage');
+    if (!document.fullscreenElement) {
+      stage.requestFullscreen().catch(err => alert(err.message));
+    } else {
+      document.exitFullscreen();
+    }
+  }
+</script>
+</body>
+</html>
